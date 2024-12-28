@@ -26,7 +26,7 @@ import json
 from pathlib import Path
 import locale
 
-locale.setlocale(locale.LC_ALL, 'pt_pt.UTF-8')
+locale.setlocale(locale.LC_ALL, 'pt_BR.utf8')
 
 #Function so it can be used from other script
 def run():
@@ -97,7 +97,7 @@ def run():
     for i in geojson['features']:
         geometria[i['properties']['Name']] = i['geometry']
 
-    #Same process to fina closest names
+    #Same process to find closest names
     bairros_metadata['Bairro2'] = bairros_metadata['Bairro'].apply(lambda x: difflib.get_close_matches(x, bairros, n=1))
 
     #Drop old column. Drop rows without name
