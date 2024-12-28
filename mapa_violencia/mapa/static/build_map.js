@@ -56,8 +56,16 @@ function concatGeoJSON(g1, g2){
     }
 }
 
-function getColor(d, total_crimes, n_bairros) {
-    d = d / total_crimes;
+function getColor(feature, total_crimes, n_bairros, percapita) {
+    if(percapita){
+        if (feature.properties.population === 0) {
+            return '#e6e6e6';
+        }
+        var d = feature.properties.n_crimes/feature.properties.population / total_crimes * 10000;
+    }
+    else{
+        var d = feature.properties.n_crimes/total_crimes;
+    }
     if(n_bairros > 8){
         var weight = 3/n_bairros;
     }
@@ -66,12 +74,14 @@ function getColor(d, total_crimes, n_bairros) {
     }
     const scale = chroma.scale(['#f2ff5c', '#e81300']).domain([0, weight]); // Define a color scale between two colors
 
+    // console.log(d);
+
     return scale(d).hex();
 }
 
-function style(feature, total_crimes, n_bairros) {
+function style(feature, total_crimes, n_bairros, percapita) {
     return {
-        fillColor: getColor(feature.properties.n_crimes, total_crimes, n_bairros),
+        fillColor: getColor(feature, total_crimes, n_bairros, percapita),
         weight: 2,
         opacity: 1,
         color: 'white',
@@ -111,7 +121,7 @@ info.addTo(map);
 
 //Get selected neighborhoods
 
-async function create_map(filtro_bairros, filtro_crimes, date_min, date_max) {
+async function create_map(filtro_bairros, filtro_crimes, percapita, date_min, date_max) {
     try {
         var neighborhods = await getData(filtro_bairros, filtro_crimes, date_min, date_max);
 
@@ -136,7 +146,7 @@ async function create_map(filtro_bairros, filtro_crimes, date_min, date_max) {
         geojson = L.geoJSON(g1, {
             onEachFeature: onEachFeature,
             style: function(feature) {
-                return style(feature, total_crimes, n_bairros);
+                return style(feature, total_crimes, n_bairros, percapita);
             }
         }).addTo(map);
     

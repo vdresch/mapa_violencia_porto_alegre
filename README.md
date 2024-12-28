@@ -8,7 +8,7 @@ This code runs a website with a fully custom dashboard with relevant statistics 
 ### How to run
 There are only three things needed to run this project:
 
-- Python
+- Python 3.9
 - The Python packages
 - The database
 
@@ -42,7 +42,6 @@ The definition of what constitutes a violent crime and a non-violent crime was a
 - deploy
 
 ### TODO extra features
-- crimes per capta / crimes totais
 - ranking of crimes
 - change datepicker min date mobile (so it does not go below oct 2021)
 - filter by weekday and time

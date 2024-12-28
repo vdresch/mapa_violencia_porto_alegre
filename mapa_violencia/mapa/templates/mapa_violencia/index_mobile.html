@@ -245,6 +245,16 @@
 		</fieldset>
 		</form>
 	</div>
+	<!-- Picket to choose how the colors are weighted -->
+	<div style="padding-top: 6%; padding-left: 7%;">
+		<form id="form_crimes">
+		{% csrf_token %}
+		<fieldset>
+			<label><input type="radio" id="total" name="percapita_total" value="total" checked> Total de crimes</label><br>
+			<label><input type="radio" id="percapita" name="percapita_total" value="percapita"> Crimes per capita</label>
+		</fieldset>
+		</form>
+	</div>
   </div>
 <!-- Main content -->
 <main>
@@ -429,7 +439,14 @@
 			var date_min = new Date('2021.10.01');
 			var date_max = new Date('{{ max_date }}');
 		}
-		create_map(filtro_bairros, filtro_crimes, date_min, date_max);
+		if($('#percapita').is(':checked')) {
+			var percapita = true;
+		}
+		else {
+			var percapita = false;
+		}
+
+		create_map(filtro_bairros, filtro_crimes, percapita, date_min, date_max);
 	}
 
 	//Function to update map when datepicker changes, because can't get element by ID
@@ -461,10 +478,18 @@
 			var date_min = new Date('2021.10.01');
 			var date_max = new Date('{{ max_date }}');
 		}
-		create_map(filtro_bairros, filtro_crimes, date_min, date_max);
+		if($('#percapita').is(':checked')) {
+			var percapita = true;
+		}
+		else {
+			var percapita = false;
+		}
+
+		create_map(filtro_bairros, filtro_crimes, percapita, date_min, date_max);
 	}
+	
 	//First update (create map)
-	create_map(["All"], [$('input[name=tipo_crime]:checked', '#form_crimes').val()], new Date('2021.10.01'), new Date('{{ max_date }}'));
+	create_map(["All"], [$('input[name=tipo_crime]:checked', '#form_crimes').val()], false, new Date('2021.10.01'), new Date('{{ max_date }}'));
 </script>
 <!-- Sidebar -->
 <script>

@@ -218,6 +218,25 @@
 			justify-content: space-between;
 			width: 100%;
 		}
+
+		.percapita_total {
+			position: absolute; /* Position relative to the nearest positioned ancestor */
+			bottom: 40px; /* Add padding from the bottom */
+			left: 40px; /* Add padding from the left */
+			background-color: rgba(255, 255, 255, 0.7); /* Optional: background for better visibility */
+			padding: 5px; /* Optional: space around the checkboxes */
+			border-radius: 10px; /* Optional: rounded corners */
+			z-index: 10; /* Ensure it's above the map */
+		}
+
+		.percapita_total label {
+			display: block; /* Stack checkboxes vertically */
+			margin-bottom: 5px; /* Space between checkboxes */
+		}
+
+		.percapita_total label:last-child {
+			margin-bottom: 0; /* Remove bottom margin from the last checkbox */
+		}
 		
 	</style>
 </head>
@@ -322,8 +341,13 @@
 		</div>
     </div>
 	<!-- Map -->
-	<div class="content">
+	<div class="content" style="position: relative; height: 100%; width: 100%;">
 		<div id="map", style="height: 100%; position: relative; outline-style: none; z-index: 0;"></div>
+		<!-- Picket to choose how the colors are weighted -->
+		<div class="percapita_total">
+			<label><input type="radio" id="total" name="percapita_total" value="total" checked> Total de crimes</label><br>
+			<label><input type="radio" id="percapita" name="percapita_total" value="percapita"> Crimes per capita</label>
+		</div>
 	</div>
 </main>
 
@@ -416,6 +440,18 @@ $(function() {
 		update()
 	});
 </script>
+<!-- Total crimes / Crimes per capita picker -->
+<script>
+	//Test change on the crimes list
+	document.getElementById('total').addEventListener('change', function (e) {
+		document.getElementById('total').checked = true;
+		update()
+	});
+	document.getElementById('percapita').addEventListener('change', function (e) {
+		document.getElementById('percapita').checked = true;
+		update()
+	});
+</script>
 <!-- Neighhborhood selector -->
 <script>
 	document.getElementById('select_neighborhoods').addEventListener('change', function (e) {
@@ -462,11 +498,18 @@ $(function() {
 			var date_max = new Date('{{ max_date }}');
 			console.log('error')
 		}
-		create_map(filtro_bairros, filtro_crimes, date_min, date_max);
+		if($('#percapita').is(':checked')) {
+			var percapita = true;
+		}
+		else {
+			var percapita = false;
+		}
+
+		create_map(filtro_bairros, filtro_crimes, percapita, date_min, date_max);
 	}
 
 	//First update (create map)
-	create_map(["All"], [$('input[name=tipo_crime]:checked', '#form_crimes').val()], new Date('2021.10.01'), new Date('{{ max_date }}'));
+	create_map(["All"], [$('input[name=tipo_crime]:checked', '#form_crimes').val()], false, new Date('2021.10.01'), new Date('{{ max_date }}'));
 
 </script>
 <!-- Show and hide sobre and map -->
