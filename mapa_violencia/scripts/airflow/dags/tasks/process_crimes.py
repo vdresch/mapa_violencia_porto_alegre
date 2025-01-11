@@ -1,15 +1,22 @@
 import pandas as pd
 import difflib
 import datetime
+import locale
 
-def process_crimes(ti):
+locale.setlocale(locale.LC_ALL, 'pt_BR.utf8')
+
+def process_crimes():
     # TROCAR POR XCOM_PULL QUANDO DOWNLOADER ESTIVER OPERACIONAL
     crimes_2021 = pd.read_csv('scripts/data/crimes_2021.csv', sep=';', encoding="ISO-8859-1")
     crimes_2022 = pd.read_csv('scripts/data/crimes_2022.csv', sep=';', encoding="ISO-8859-1")
     crimes_2023 = pd.read_csv('scripts/data/crimes_2023.csv', sep=';', encoding="ISO-8859-1")
     crimes = pd.concat([crimes_2021, crimes_2022, crimes_2023], ignore_index=True)
 
-    bairros = ti.xcom_pull(task_id='open_neighborhoods')
+    #Open table containing neighborhoods names
+    bairros_metadata = pd.read_csv('scripts/resources/shapesbairros2016/Lista_de_bairros_de_Porto_Alegre_1.csv')
+    bairros_metadata['Bairro'] = bairros_metadata['Bairro'].apply(lambda x: x.upper())
+
+    bairros = bairros_metadata['Bairro']
 
     #Drop colunas desnecessárias
     crimes = crimes.drop(crimes.columns[10:], axis=1)

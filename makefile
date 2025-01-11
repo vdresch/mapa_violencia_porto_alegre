@@ -11,5 +11,6 @@ stop_prune:
 	sudo rm mapa_violencia/scripts/airflow/airflow.cfg
 	sudo rm mapa_violencia/scripts/airflow/airflow.db
 	sudo rm mapa_violencia/scripts/airflow/webserver_config.py
-	sudo rm mapa_violencia/scripts/airflow/airflow-webserver.pid
 	sudo rm -r mapa_violencia/scripts/airflow/logs
+	sudo rm mapa_violencia/scripts/airflow/airflow-webserver.pid
+	sudo rm -r mapa_violencia/scripts/airflow/dags/__pycache__

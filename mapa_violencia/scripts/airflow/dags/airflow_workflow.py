@@ -6,11 +6,11 @@
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
 from datetime import datetime
 
 # Import tasks
 from tasks.download_data import download_data
-from tasks.open_neighborhoods import open_neighborhoods
 from tasks.process_crimes import process_crimes
 from tasks.process_neighborhoods import process_neighborhoods
 
@@ -26,23 +26,22 @@ with DAG(
         task_id = 'download_data',
         python_callable = download_data
     )
-    # Open a list of all the neighborhoods in Porto Alegre
-    task2 = PythonOperator(
-        task_id = 'open_neighborhoods',
-        python_callable = open_neighborhoods  
-    )
     # Process the data and metadata from the downloaded data
-    task3 = PythonOperator(
+    task2 = PythonOperator(
         task_id = 'process_crimes',
         python_callable = process_crimes
     )
     # Process the data and metadata from the neighborhoods geo data
-    task4 = PythonOperator(
+    task3 = PythonOperator(
         task_id = 'process_neighborhoods',
         python_callable = process_neighborhoods  
     )
+    # Reload Django aplication
+    task4 = BashOperator(
+        task_id = 'restart_django_server',
+        bash_command= '''echo "# meow" >> /mapa_violencia/manage.py && sed -i '' -e '$ d' /mapa_violencia/manage.py'''
+    )
 
-    task1 >> task3
-    task2 >> task3
+    task1 >> task2
     task2 >> task4
-
+    task3 >> task4
