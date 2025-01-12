@@ -18,7 +18,7 @@ from tasks.process_neighborhoods import process_neighborhoods
 with DAG(
     dag_id='update_crimes',
     description='Monthly update on the crime statistics for Porto Alegre',
-    start_date=datetime(2024, 12, 20, 22, 0),
+    start_date=datetime(2024, 12, 25, 22, 0),
     schedule_interval='@monthly'
 ) as dag:
     # Download the data from the oficial website
@@ -39,7 +39,7 @@ with DAG(
     # Reload Django aplication
     task4 = BashOperator(
         task_id = 'restart_django_server',
-        bash_command= '''echo "# meow" >> /mapa_violencia/manage.py && sed -i '' -e '$ d' /mapa_violencia/manage.py'''
+        bash_command= '''echo "# meow" >> /mapa_violencia/manage.py && sed -i -e '$ d' /mapa_violencia/manage.py'''
     )
 
     task1 >> task2
